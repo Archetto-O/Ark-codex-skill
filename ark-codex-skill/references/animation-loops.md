@@ -17,13 +17,10 @@ PRTS的WebM导出片段不一定包含整数个动作周期。直接从末帧跳
 
 自动匹配只是候选循环。预览至少两个完整周期，观察角色整体位置、衣摆和特效。如果选中了局部重复姿势、录制里含有入场动作，或光流使细节变形，应手动指定区间或减少补帧。素材本身没有重复动作时，补帧不能将它变成自然的周期动画。
 
-区间使用从0开始的帧号，`--start`包含该帧，`--end`不包含该帧。例如空弦“至虔者荣光”的这次导出，在20fps下可使用以下区间。不同次导出可能需要重新选择。
+区间使用从0开始的帧号，`--start`包含该帧，`--end`不包含该帧。以下通用示例选择第10帧到第49帧，并补3帧。实际区间需根据该角色的动画预览调整。
 
 ```powershell
-<project>/.venv/Scripts/python.exe <skill>/scripts/prepare_loops.py --pet <project>/pets/空弦 --state idle --start 25 --end 66 --transition-frames 3
-<project>/.venv/Scripts/python.exe <skill>/scripts/prepare_loops.py --pet <project>/pets/空弦 --state move --start 15 --end 43 --transition-frames 2
-<project>/.venv/Scripts/python.exe <skill>/scripts/prepare_loops.py --pet <project>/pets/空弦 --state sit --start 9 --end 50 --transition-frames 2
-<project>/.venv/Scripts/python.exe <skill>/scripts/prepare_loops.py --pet <project>/pets/空弦 --state sleep --start 12 --end 67 --transition-frames 2
+<project>/.venv/Scripts/python.exe <skill>/scripts/prepare_loops.py --pet <project>/pets/<operator> --state idle --start 10 --end 50 --transition-frames 3
 ```
 
 `--transition-frames 0`只选择循环区间，不生成补帧。再次运行时只替换上次生成的帧，减少补帧数量时会清理多余的生成帧。
