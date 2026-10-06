@@ -1,0 +1,15 @@
+{
+  "speed": 1.0,
+  "subtitle_length": "medium",
+  "subtitle_size": 14,
+  "bar_length": 100,
+  "mini_mode": false,
+  "auto_hide_fullscreen": false,
+  "locked": false,
+  "scale": 0.3,
+  "pos_x": null,
+  "pos_y": null,
+  "pet": "空弦",
+  "pet_states": {},
+  "autostart_with_codex": false
+}

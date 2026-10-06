@@ -12,11 +12,11 @@ APP_TEMPLATE = SKILL_DIR / "assets" / "deskpet-app"
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--target", required=True)
+    parser.add_argument("--target", default=str(Path.cwd() / "archetto-deskpet"))
     parser.add_argument(
         "--pet",
-        default="予愿安洁莉娜",
-        help="initial pet name (default: bundled 予愿安洁莉娜)",
+        default="空弦",
+        help="initial pet name (default: bundled 空弦, 至虔者荣光)",
     )
     args = parser.parse_args()
 
@@ -33,15 +33,15 @@ def main():
     settings = {
         "speed": 1.0,
         "subtitle_length": "medium",
-        "subtitle_size": 19,
+        "subtitle_size": 14,
         "bar_length": 100,
         "mini_mode": False,
         "auto_hide_fullscreen": False,
-        "locked": True,
-        "scale": 1.0,
+        "locked": False,
+        "scale": 0.3,
         "pos_x": None,
         "pos_y": None,
-        "pet": args.pet or "予愿安洁莉娜",
+        "pet": args.pet or "空弦",
         "pet_states": {},
         "autostart_with_codex": False,
     }

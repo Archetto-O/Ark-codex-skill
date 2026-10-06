@@ -258,7 +258,7 @@ class SettingsDialog(QDialog):
         )
 
         self.size_slider = QSlider(Qt.Horizontal)
-        self.size_slider.setRange(14, 26)
+        self.size_slider.setRange(6, 26)
         self.size_slider.setValue(int(settings.get("subtitle_size", 19)))
         self.size_value = QLabel(f"{self.size_slider.value()}px")
         self.size_slider.valueChanged.connect(
@@ -341,7 +341,7 @@ class PetWindow(QWidget):
         )
         self.subtitle_length = self.settings.get("subtitle_length", "medium")
         self.subtitle_size = max(
-            14, min(26, int(self.settings.get("subtitle_size", 19)))
+            6, min(26, int(self.settings.get("subtitle_size", 19)))
         )
         self.bar_length = max(40, min(100, int(self.settings.get("bar_length", 100))))
         self.locked = bool(self.settings.get("locked", True))
@@ -490,30 +490,43 @@ class PetWindow(QWidget):
 
     def next_frame(self):
         info = self.state_info(self.state)
-        sequence = info.get("loop_frames")
+        count = info["count"]
         looping = self.hold_state or self.state in ("idle", "move")
+        sequence = info.get("loop_frames")
         if looping and sequence:
             index = sequence.index(self.frame_index)
             self.frame_index = sequence[(index + 1) % len(sequence)]
             self.update()
             return
-        count = info.get("source_count", info["count"])
+        if not looping:
+            count = info.get("source_count", count)
+        loop_start = info.get("loop_start", 0)
+        loop_end = info.get("loop_end", count)
+        if not self.hold_state and self.state in ("interact", "sit", "sleep"):
+            loop_start, loop_end = 0, count
         if self.state == "sleep":
             if not self.hold_state and self.frame_index >= count - 1:
                 self.update()
                 return
-            self.frame_index = (self.frame_index + 1) % count
+            self.frame_index += 1
+            if self.frame_index >= loop_end:
+                self.frame_index = loop_start
         elif self.state in ("interact", "sit"):
             if not self.hold_state and self.frame_index >= count - 1:
                 self.set_state("idle")
                 return
-            self.frame_index = (self.frame_index + 1) % count
+            self.frame_index += 1
+            if self.frame_index >= loop_end:
+                self.frame_index = loop_start
         else:
-            self.frame_index = (self.frame_index + 1) % count
+            self.frame_index += 1
+            if self.frame_index >= loop_end:
+                self.frame_index = loop_start
         self.update()
 
     def subtitle_font(self):
         font = QFont()
+        font.setFamilies(["Times New Roman", "SimSun"])
         font.setPixelSize(self.subtitle_size)
         return font
 
@@ -568,13 +581,6 @@ class PetWindow(QWidget):
 
         if self.show_status:
             bar = self.subtitle_bar()
-            if self.status_active:
-                painter.setBrush(QColor(30, 120, 70, 190))
-            else:
-                painter.setBrush(QColor(25, 25, 25, 170))
-            painter.setPen(Qt.NoPen)
-            painter.drawRoundedRect(bar, 8, 8)
-
             font = self.subtitle_font()
             painter.setFont(font)
             metrics = QFontMetrics(font)
@@ -582,12 +588,10 @@ class PetWindow(QWidget):
             text_width = metrics.horizontalAdvance(self.status_text)
             painter.save()
             painter.setClipRect(text_rect)
-            painter.setPen(QColor(255, 255, 255))
             if text_width <= text_rect.width():
-                painter.drawText(
-                    text_rect, Qt.AlignVCenter | Qt.AlignHCenter, self.status_text
-                )
+                captions = [(text_rect, Qt.AlignVCenter | Qt.AlignHCenter)]
             else:
+                captions = []
                 for offset in (0, text_width + 32):
                     rect = QRectF(
                         text_rect.x() - self.subtitle_offset + offset,
@@ -595,9 +599,15 @@ class PetWindow(QWidget):
                         text_width + 2,
                         text_rect.height(),
                     )
+                    captions.append((rect, Qt.AlignVCenter | Qt.AlignLeft))
+            for rect, alignment in captions:
+                painter.setPen(QColor(0, 0, 0, 210))
+                for dx, dy in ((-1, 0), (1, 0), (0, -1), (0, 1)):
                     painter.drawText(
-                        rect, Qt.AlignVCenter | Qt.AlignLeft, self.status_text
+                        rect.translated(dx, dy), alignment, self.status_text
                     )
+                painter.setPen(QColor(255, 255, 255))
+                painter.drawText(rect, alignment, self.status_text)
             painter.restore()
 
     def mousePressEvent(self, event):
@@ -977,7 +987,7 @@ class PetWindow(QWidget):
             if progress:
                 parts.append(self._cut(progress, 80))
         self.status_text = " · ".join(parts)
-        scroll_key = (self.status_active, task, self.subtitle_length)
+        scroll_key = (task, self.subtitle_length)
         if scroll_key != self.subtitle_scroll_key:
             self.subtitle_scroll_key = scroll_key
             self.reset_subtitle_scroll()

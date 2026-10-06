@@ -1,5 +1,9 @@
 # Ark Codex Skill
 
+此fork的默认分支包含空弦「至虔者荣光」桌宠资源及本地定制字幕样式。可从[空弦桌宠下载页](https://github.com/Archetto-O/Ark-codex-skill/releases/tag/archetto-glory-v1)下载独立包，解压后先运行「安装环境.bat」，再运行「启动桌宠.bat」。也可下载本仓库源码，在`ark-codex-skill/assets/deskpet-app/`中按相同步骤启动。
+
+空弦版本包含337张透明PNG帧、5份原始WebM、已处理的动作循环、TNR/宋体字幕和透明字幕背景。安装skill后生成项目默认选择空弦；原仓库自带的予愿安洁莉娜仍保留。通用功能PR使用独立分支，角色资源只发布到本fork。
+
 用AI辅助制作的一个用于制作《明日方舟》透明桌面宠物（Codex 桌宠）的 Codex skill。给它一个干员名（可选皮肤名），它会自动从 PRTS Wiki 导出该干员的基建 WebM 动画，转换成带透明通道的 PNG 帧，生成桌宠并加入桌宠库。
 
 > 仓库：[AstrariaX/Ark-codex-skill](https://github.com/AstrariaX/Ark-codex-skill)
