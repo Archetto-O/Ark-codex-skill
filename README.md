@@ -90,7 +90,7 @@ ark-codex-skill/
 直接对 Codex 说：
 
 ```text
-安装 GitHub 仓库 AstrariaX/Ark-codex-skill 里的 ark-codex-skill skill
+安装 GitHub 仓库 Archetto-O/Ark-codex-skill 里的 ark-codex-skill skill
 ```
 
 也可以手动安装：把仓库里的 `ark-codex-skill/` 目录复制到 `~/.codex/skills/`。
@@ -98,7 +98,7 @@ ark-codex-skill/
 如果使用 Codex 的 skill 安装器，也可以这样安装：
 
 ```text
---repo AstrariaX/Ark-codex-skill --path ark-codex-skill
+--repo Archetto-O/Ark-codex-skill --path ark-codex-skill
 ```
 
 ### 第二步：调用
